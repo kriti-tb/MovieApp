@@ -1,7 +1,5 @@
 package com.`fun`.movieapp.data.model
 
-import com.movieapp.data.model.AuthorDetails
-
 data class ResultX(
         val author: String,
         val author_details: AuthorDetails,

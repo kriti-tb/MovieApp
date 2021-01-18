@@ -1,4 +1,4 @@
-package com.fun.movieapp.data.model
+package com.`fun`.movieapp.data.model
 
 data class AuthorDetails(
     val avatar_path: String,
