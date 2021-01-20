@@ -1,61 +1,72 @@
 package com.`fun`.movieapp.view
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.`fun`.movieapp.R
 import com.`fun`.movieapp.data.api.ApiHelper
 import com.`fun`.movieapp.data.api.RetrofitBuilder
+import com.`fun`.movieapp.data.model.Result
+import com.`fun`.movieapp.databinding.MainFragmentBinding
 import com.`fun`.movieapp.utils.Status
+import com.`fun`.movieapp.view.adapter.MainAdapter
 import com.`fun`.movieapp.viewmodel.MovieListViewModel
 import com.`fun`.movieapp.viewmodel.MovieListViewModelFactory
 
 
+
 class MainFragment : Fragment() {
+    private lateinit var viewModel: MovieListViewModel
+    private lateinit var adapter: MainAdapter
+    lateinit  var movieList :List<Result>
+    private lateinit var fragmentbinding: MainFragmentBinding
 
     companion object {
         fun newInstance() = MainFragment()
     }
 
-    private lateinit var viewModel: MovieListViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.main_fragment, container, false)
+        initViewModel()
+        initObservers()
+        fragmentbinding = DataBindingUtil.inflate(
+            inflater,
+            R.layout.main_fragment, container, false
+        )
+        return fragmentbinding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        init()
-    }
-    private fun init(){
-        initViewModel()
-        initData()
-        setupObservers()
-        //initAdapter()
-    }
+
+
 
    private fun initViewModel() {
 
-        viewModel = ViewModelProviders.of(this , MovieListViewModelFactory(ApiHelper(RetrofitBuilder.apiService, "01c49e5a9d80cd8c6c5964b952ce3a55")))
+        viewModel = ViewModelProviders.of(
+            this, MovieListViewModelFactory(
+                ApiHelper(
+                    RetrofitBuilder.apiService,
+                    "01c49e5a9d80cd8c6c5964b952ce3a55"
+                )
+            )
+        )
             .get(MovieListViewModel::class.java)
 
     }
 
-    private fun initData() {
-        viewModel.getMovieList()
-    }
 
-    private fun setupObservers() {
+
+    private fun initObservers() {
 
         viewModel.getMovieList().observe(viewLifecycleOwner, Observer {
             it?.let { resource ->
@@ -64,7 +75,7 @@ class MainFragment : Fragment() {
 
                         resource.data?.let { response ->
 
-                            initRv(response.result)
+                            initadapter(response.results)
 
                         }
                     }
@@ -77,6 +88,21 @@ class MainFragment : Fragment() {
                 }
             }
         })
+    }
+
+    private fun initadapter(response: List<Result>) {
+        movieList=response
+        adapter= MainAdapter()
+        adapter.submitList(response as MutableList<*>)
+        fragmentbinding.movieslist.layoutManager=LinearLayoutManager(activity,LinearLayoutManager.VERTICAL,false)
+        fragmentbinding.movieslist.adapter=adapter
+
+
+
+
+
+
+
     }
 
 
