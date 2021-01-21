@@ -30,7 +30,7 @@ class MainFragment : Fragment() {
     private lateinit var fragmentbinding: MainFragmentBinding
 
     companion object {
-        fun newInstance() = MainFragment()
+        fun newInstance() = MainFragment().apply{}
     }
 
 
@@ -38,13 +38,18 @@ class MainFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        initViewModel()
-        initObservers()
+
         fragmentbinding = DataBindingUtil.inflate(
             inflater,
             R.layout.main_fragment, container, false
         )
         return fragmentbinding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initViewModel()
+        initObservers()
     }
 
 

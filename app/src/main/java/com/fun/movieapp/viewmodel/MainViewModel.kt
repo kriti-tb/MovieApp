@@ -13,18 +13,18 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
     fun getMovie() = liveData(Dispatchers.IO) {
         emit(Resource.loading(data   = null))
         try {
-            emit(Resource.success(data = mainRepository.getMovieInfo()))
+            emit(Resource.success(data = mainRepository.getMovieInfo1()))
         } catch (exception: Exception) {
            // emit(Resource.error(data = null, msg = exception.message ?: "Error Occurred!"))
         }
     }
 
-    fun getReviewInfo() = liveData(Dispatchers.IO) {
+    /*fun getReviewInfo() = liveData(Dispatchers.IO) {
         emit(Resource.loading(data   = null))
         try {
             emit(Resource.success(data = mainRepository.getReview()))
         } catch (exception: Exception) {
            // emit(Resource.error(data = null, msg = exception.message ?: "Error Occurred!"))
         }
-    }
+    } */
 }
